@@ -8,7 +8,7 @@
 
 
 Основные команды:
-   uname -r
+```   uname -r
    mkdir Kernel
    cd Kernel/
    ls -alh
@@ -21,7 +21,7 @@
    sudo update-grub
    sudo grub-set-default 0
    uname -r
-
+```
 Результат:
 user@test:~$ uname -r
 6.14.0-061400rc5-generic
