@@ -23,6 +23,7 @@
    uname -r
 ```
 Результат:
-```user@test:~$ uname -r
+```
+user@test:~$ uname -r
 6.14.0-061400rc5-generic
 ```
