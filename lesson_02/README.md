@@ -28,12 +28,12 @@ sdf                         8:80   0    1G  0 disk
 sr0                        11:0    1 1024M  0 rom
 ```
 **Выполнение:**  
-`sudo mdadm --create --verbose /dev/md0 -l 10 -n 4 /dev/sd{b,c,d,e}`
+`sudo mdadm --create --verbose /dev/md0 -l 10 -n 4 /dev/sd{b,c,d,e}`  
 3) **отчет по командам для починки RAID и созданию разделов.**  
 Выводим зафейленный диск из рейда  
-`sudo mdadm /dev/md0 --remove /dev/sdb`
+`sudo mdadm /dev/md0 --remove /dev/sdb`  
 Добавляем новый диск  
-`sudo mdadm /dev/md0 --add /dev/sdf`
+`sudo mdadm /dev/md0 --add /dev/sdf`  
 **Создание разделов:**  
 ```
 sudo parted /dev/md0 mkpart primary ext4 0% 25%
