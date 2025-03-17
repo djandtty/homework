@@ -41,8 +41,8 @@
    44  lvs /dev/vege001/elve001  
    45  **resize2fs /dev/vege001/elve001**  
    46  df -Th /data/  
+   
 Проверить корректность работы  
-
    47  **umount /data/**  
    48  df -Th  
    49  **mount /dev/vege001/elve001 /data/**  
