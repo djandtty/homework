@@ -26,20 +26,21 @@ cd brotli/
 ls
 mkdir out && cd out
 ```
-Собираем модуль ngx_brotli: 
+Собираем модуль ngx_brotli:  
 `cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_C_FLAGS="-Ofast -m64 -march=native -mtune=native -flto -funroll-loops -ffunction-sections -fdata-sections -Wl,--gc-sections" -DCMAKE_CXX_FLAGS="-Ofast -m64 -march=native -mtune=native -flto -funroll-loops -ffunction-sections -fdata-sections -Wl,--gc-sections" -DCMAKE_INSTALL_PREFIX=./installed ..`
 
+Вижу:  
 `-- Build files have been written to: /root/ngx_brotli/deps/brotli/out`
 
 `cmake --build . --config Release -j 2 --target brotlienc`
 
-Редактирую файл spec
+Редактирую файл spec:  
 ```
 cd ~/rpmbuild/SPECS/
 ls
 vi nginx.spec
 ```
-в секции %build
+в секции %build  
 `--add-module=/root/ngx_brotli \`
 
 Сборка:  
@@ -60,7 +61,7 @@ ls
 rpm -Uvh nginx-1.20.1-20.el9.alma.1.src.rpm
 yum-builddep nginx
 ```
-Сюорка, теперь успешно:  
+Сборка, теперь успешно:  
 `rpmbuild -ba nginx.spec -D 'debug_package %{nil}'`
 
 Можно проверить созданные пакеты:  
