@@ -26,10 +26,12 @@ root@ubuntu1:~# lvs
 root@ubuntu1:~# vgrename ubuntu-vg ubuntu-test
   Volume group "ubuntu-vg" successfully renamed to "ubuntu-test"
 
+root@ubuntu1:~# lvrename /dev/ubuntu-test/ubuntu-lv /dev/ubuntu-test/ubuntu-testt
+  Renamed "ubuntu-lv" to "ubuntu-testt" in volume group "ubuntu-test"
+```
+Дальше в конфигурационном файле меняю записи ubuntu--vg на ubuntu--test и ubuntu--lv на ubuntu--testt
+```
 root@ubuntu1:~# nano /boot/grub/grub.cfg
-```
-Тут меняю записи ubuntu--vg на ubuntu--test и ubuntu--lv на ubuntu--testt
-```
 linux   /vmlinuz-6.8.0-55-generic root=/dev/mapper/ubuntu--test-ubuntu--testt ro recovery nomodeset dis_ucode_ldr
 
 root@ubuntu1:~# vgs
