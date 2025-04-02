@@ -3,13 +3,13 @@
 И ключевое слово `failure`  
 Создаю конфиг для обозначения этих переменных:  
 ```
-sudo nano /etc/default/logcheck.conf
+sudo vi /etc/default/logcheck.conf
 WORD="failure"
 FILE="/var/log/auth.log"
 ```
 Создаю скрипт для поиска и записи в лог при нахождении:  
 ```
-sudo nano /usr/local/bin/logcheck.sh
+sudo vi /usr/local/bin/logcheck.sh
 
 #!/bin/bash
 source /etc/default/logcheck.conf
