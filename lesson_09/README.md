@@ -1,4 +1,5 @@
-1. Написать service, который будет раз в 30 секунд мониторить лог на предмет наличия ключевого слова (файл лога и ключевое слово должны задаваться в /etc/default)  
+**1. Написать service, который будет раз в 30 секунд мониторить лог на предмет наличия ключевого слова (файл лога и ключевое слово должны задаваться в /etc/default)**
+
 Буду использовать файл лога `/var/log/auth.log`  
 И ключевое слово `failure`  
 Создаю конфиг для обозначения этих переменных:  
@@ -105,10 +106,83 @@ Apr 02 07:28:41 ubu2 systemd[1]: Started logcheck.timer - Test Timer to Test Ser
 ```
 
 
-2. Установить spawn-fcgi и создать unit-файл (spawn-fcgi.sevice) с помощью переделки init-скрипта (https://gist.github.com/cea2k/1318020).
+**2. Установить spawn-fcgi и создать unit-файл (spawn-fcgi.sevice) с помощью переделки init-скрипта (https://gist.github.com/cea2k/1318020).**
+Устанавливаю пакет:  
+`sudo apt install spawn-fcgi php php-cgi php-cli apache2 libapache2-mod-fcgid`  
+Добавляю конфиг:  
+```
+sudo mkdir /etc/spawn-fcgi/
+sudo nano /etc/spawn-fcgi/fcgi.conf
 
+SOCKET=/var/run/php-fcgi.sock
+OPTIONS="-u www-data -g www-data -s $SOCKET -S -M 0600 -C 32 -F 1 -- /usr/bin/php-cgi"
+```
+И сам unit:  
+```
+sudo nano /etc/systemd/system/spawn-fcgi.service
+[Unit]
+Description=Spawn-fcgi startup service by Otus
+After=network.target
 
-3. Доработать unit-файл Nginx (nginx.service) для запуска нескольких инстансов сервера с разными конфигурационными файлами одновременно.
+[Service]
+Type=simple
+PIDFile=/var/run/spawn-fcgi.pid
+EnvironmentFile=/etc/spawn-fcgi/fcgi.conf
+ExecStart=/usr/bin/spawn-fcgi -n $OPTIONS
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target
+```
+Запускаю сервис и проверяю его:  
+```
+sudo systemctl start spawn-fcgi
+sudo systemctl status spawn-fcgi
+● spawn-fcgi.service - Spawn-fcgi startup service by Otus
+     Loaded: loaded (/etc/systemd/system/spawn-fcgi.service; disabled; preset: enabled)
+     Active: active (running) since Fri 2025-04-04 16:14:52 UTC; 6s ago
+   Main PID: 9132 (php-cgi)
+      Tasks: 33 (limit: 2272)
+     Memory: 19.4M (peak: 19.4M)
+        CPU: 44ms
+     CGroup: /system.slice/spawn-fcgi.service
+             ├─9132 /usr/bin/php-cgi
+             ├─9136 /usr/bin/php-cgi
+             ├─9137 /usr/bin/php-cgi
+             ├─9138 /usr/bin/php-cgi
+             ├─9139 /usr/bin/php-cgi
+             ├─9140 /usr/bin/php-cgi
+             ├─9141 /usr/bin/php-cgi
+             ├─9142 /usr/bin/php-cgi
+             ├─9143 /usr/bin/php-cgi
+             ├─9144 /usr/bin/php-cgi
+             ├─9145 /usr/bin/php-cgi
+             ├─9146 /usr/bin/php-cgi
+             ├─9147 /usr/bin/php-cgi
+             ├─9148 /usr/bin/php-cgi
+             ├─9149 /usr/bin/php-cgi
+             ├─9150 /usr/bin/php-cgi
+             ├─9151 /usr/bin/php-cgi
+             ├─9152 /usr/bin/php-cgi
+             ├─9153 /usr/bin/php-cgi
+             ├─9154 /usr/bin/php-cgi
+             ├─9155 /usr/bin/php-cgi
+             ├─9156 /usr/bin/php-cgi
+             ├─9157 /usr/bin/php-cgi
+             ├─9158 /usr/bin/php-cgi
+             ├─9159 /usr/bin/php-cgi
+             ├─9160 /usr/bin/php-cgi
+             ├─9161 /usr/bin/php-cgi
+             ├─9162 /usr/bin/php-cgi
+             ├─9163 /usr/bin/php-cgi
+             ├─9164 /usr/bin/php-cgi
+             ├─9165 /usr/bin/php-cgi
+             ├─9166 /usr/bin/php-cgi
+             └─9167 /usr/bin/php-cgi
+
+Apr 04 16:14:52 ubu2 systemd[1]: Started spawn-fcgi.service - Spawn-fcgi startup service by Otus.
+```
+**3. Доработать unit-файл Nginx (nginx.service) для запуска нескольких инстансов сервера с разными конфигурационными файлами одновременно.**
 
 Установил nginx:  
 `sudo apt install nginx`  
