@@ -111,7 +111,7 @@ Apr 02 07:28:41 ubu2 systemd[1]: Started logcheck.timer - Test Timer to Test Ser
 3. Доработать unit-файл Nginx (nginx.service) для запуска нескольких инстансов сервера с разными конфигурационными файлами одновременно.
 
 Установил nginx:  
-`sudo apt install nginx`
+`sudo apt install nginx`  
 Редактирую unit:  
 ```sudo vi /etc/systemd/system/nginx@.service
 [Unit]
