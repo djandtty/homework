@@ -132,10 +132,10 @@ KillMode=mixed
 [Install]
 WantedBy=multi-user.target
 ```
-
-sudo cp /etc/nginx/nginx.conf /etc/nginx/nginx-first.conf
-sudo cp /etc/nginx/nginx.conf /etc/nginx/nginx-second.conf
-И редактирую их
+Создаю конфиги:  
+`sudo cp /etc/nginx/nginx.conf /etc/nginx/nginx-first.conf`  
+`sudo cp /etc/nginx/nginx.conf /etc/nginx/nginx-second.conf`  
+И редактирую их:
 ```
 sudo vi /etc/nginx/nginx-first.conf
 
