@@ -112,16 +112,16 @@ Apr 02 07:28:41 ubu2 systemd[1]: Started logcheck.timer - Test Timer to Test Ser
 Добавляю конфиг:  
 ```
 sudo mkdir /etc/spawn-fcgi/
-sudo nano /etc/spawn-fcgi/fcgi.conf
+sudo vi /etc/spawn-fcgi/fcgi.conf
 
 SOCKET=/var/run/php-fcgi.sock
 OPTIONS="-u www-data -g www-data -s $SOCKET -S -M 0600 -C 32 -F 1 -- /usr/bin/php-cgi"
 ```
 И сам unit:  
 ```
-sudo nano /etc/systemd/system/spawn-fcgi.service
+sudo vi /etc/systemd/system/spawn-fcgi.service
 [Unit]
-Description=Spawn-fcgi startup service by Otus
+Description=Test Spawn-fcgi startup service
 After=network.target
 
 [Service]
@@ -138,7 +138,7 @@ WantedBy=multi-user.target
 ```
 sudo systemctl start spawn-fcgi
 sudo systemctl status spawn-fcgi
-● spawn-fcgi.service - Spawn-fcgi startup service by Otus
+● spawn-fcgi.service - Test Spawn-fcgi startup service
      Loaded: loaded (/etc/systemd/system/spawn-fcgi.service; disabled; preset: enabled)
      Active: active (running) since Fri 2025-04-04 16:14:52 UTC; 6s ago
    Main PID: 9132 (php-cgi)
@@ -180,7 +180,7 @@ sudo systemctl status spawn-fcgi
              ├─9166 /usr/bin/php-cgi
              └─9167 /usr/bin/php-cgi
 
-Apr 04 16:14:52 ubu2 systemd[1]: Started spawn-fcgi.service - Spawn-fcgi startup service by Otus.
+Apr 04 16:14:52 ubu2 systemd[1]: Started spawn-fcgi.service - Test Spawn-fcgi startup service.
 ```
 **3. Доработать unit-файл Nginx (nginx.service) для запуска нескольких инстансов сервера с разными конфигурационными файлами одновременно.**
 
