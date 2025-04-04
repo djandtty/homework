@@ -200,7 +200,7 @@ http {
 nginx -t
 sudo systemctl start nginx@first
 sudo systemctl start nginx@second
-
+```
 Проверяю статус:
 ```
 user@ubu2:/etc/nginx$ sudo systemctl status nginx@first.service
