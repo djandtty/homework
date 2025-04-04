@@ -110,4 +110,146 @@ Apr 02 07:28:41 ubu2 systemd[1]: Started logcheck.timer - Test Timer to Test Ser
 
 3. Доработать unit-файл Nginx (nginx.service) для запуска нескольких инстансов сервера с разными конфигурационными файлами одновременно.
 
+Установил nginx:  
+`sudo apt install nginx`
+Редактирую unit:  
+```sudo vi /etc/systemd/system/nginx@.service
+[Unit]
+Description=A high performance web server and a reverse proxy server
+Documentation=man:nginx(8)
+After=network.target nss-lookup.target
 
+[Service]
+Type=forking
+PIDFile=/run/nginx-%I.pid
+ExecStartPre=/usr/sbin/nginx -t -c /etc/nginx/nginx-%I.conf -q -g 'daemon on; master_process on;'
+ExecStart=/usr/sbin/nginx -c /etc/nginx/nginx-%I.conf -g 'daemon on; master_process on;'
+ExecReload=/usr/sbin/nginx -c /etc/nginx/nginx-%I.conf -g 'daemon on; master_process on;' -s reload
+ExecStop=-/sbin/start-stop-daemon --quiet --stop --retry QUIT/5 --pidfile /run/nginx-%I.pid
+TimeoutStopSec=5
+KillMode=mixed
+
+[Install]
+WantedBy=multi-user.target
+```
+
+sudo cp /etc/nginx/nginx.conf /etc/nginx/nginx-first.conf
+sudo cp /etc/nginx/nginx.conf /etc/nginx/nginx-second.conf
+И редактирую их
+```
+sudo vi /etc/nginx/nginx-first.conf
+
+user www-data;
+worker_processes auto;
+pid /run/nginx-first.pid;
+#pid /run/nginx.pid;
+error_log /var/log/nginx/error.log;
+include /etc/nginx/modules-enabled/*.conf;
+events {
+        worker_connections 768;
+        # multi_accept on;
+}
+http {
+        server {
+                listen 9001;
+        }
+        sendfile on;
+        tcp_nopush on;
+        types_hash_max_size 2048;
+        include /etc/nginx/mime.types;
+        default_type application/octet-stream;
+        ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3; # Dropping SSLv3, ref: POODLE
+        ssl_prefer_server_ciphers on;
+        access_log /var/log/nginx/access.log;
+        gzip on;
+        include /etc/nginx/conf.d/*.conf;
+#       include /etc/nginx/sites-enabled/*;
+}
+
+sudo vi /etc/nginx/nginx-second.conf
+
+user www-data;
+worker_processes auto;
+pid /run/nginx-second.pid;
+#pid /run/nginx.pid;
+error_log /var/log/nginx/error.log;
+include /etc/nginx/modules-enabled/*.conf;
+events {
+        worker_connections 768;
+        # multi_accept on;
+}
+http {
+        server {
+                listen 9002;
+        }
+        sendfile on;
+        tcp_nopush on;
+        types_hash_max_size 2048;
+        include /etc/nginx/mime.types;
+        default_type application/octet-stream;
+        ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3; # Dropping SSLv3, ref: POODLE
+        ssl_prefer_server_ciphers on;
+        access_log /var/log/nginx/access.log;
+        gzip on;
+        include /etc/nginx/conf.d/*.conf;
+#       include /etc/nginx/sites-enabled/*;
+}
+```
+Делаю проверку и запускаю:  
+```
+nginx -t
+sudo systemctl start nginx@first
+sudo systemctl start nginx@second
+
+Проверяю статус:
+```
+user@ubu2:/etc/nginx$ sudo systemctl status nginx@first.service
+● nginx@first.service - A high performance web server and a reverse proxy server
+     Loaded: loaded (/etc/systemd/system/nginx@.service; disabled; preset: enabled)
+     Active: active (running) since Fri 2025-04-04 15:12:55 UTC; 53min ago
+       Docs: man:nginx(8)
+    Process: 1794 ExecStartPre=/usr/sbin/nginx -t -c /etc/nginx/nginx-first.conf -q -g daemon on; master_process on; (code=exited, status=0/SUCCESS)
+    Process: 1798 ExecStart=/usr/sbin/nginx -c /etc/nginx/nginx-first.conf -g daemon on; master_process on; (code=exited, status=0/SUCCESS)
+   Main PID: 1800 (nginx)
+      Tasks: 2 (limit: 2272)
+     Memory: 1.7M (peak: 1.9M)
+        CPU: 18ms
+     CGroup: /system.slice/system-nginx.slice/nginx@first.service
+             ├─1800 "nginx: master process /usr/sbin/nginx -c /etc/nginx/nginx-first.conf -g daemon on; master_process on;"
+             └─1801 "nginx: worker process"
+
+Apr 04 15:12:55 ubu2 systemd[1]: Starting nginx@first.service - A high performance web server and a reverse proxy server...
+Apr 04 15:12:55 ubu2 systemd[1]: Started nginx@first.service - A high performance web server and a reverse proxy server.
+user@ubu2:/etc/nginx$ sudo systemctl status nginx@second.service
+● nginx@second.service - A high performance web server and a reverse proxy server
+     Loaded: loaded (/etc/systemd/system/nginx@.service; disabled; preset: enabled)
+     Active: active (running) since Fri 2025-04-04 15:21:55 UTC; 44min ago
+       Docs: man:nginx(8)
+    Process: 2005 ExecStartPre=/usr/sbin/nginx -t -c /etc/nginx/nginx-second.conf -q -g daemon on; master_process on; (code=exited, status=0/SUCCESS)
+    Process: 2007 ExecStart=/usr/sbin/nginx -c /etc/nginx/nginx-second.conf -g daemon on; master_process on; (code=exited, status=0/SUCCESS)
+   Main PID: 2008 (nginx)
+      Tasks: 2 (limit: 2272)
+     Memory: 1.7M (peak: 1.9M)
+        CPU: 12ms
+     CGroup: /system.slice/system-nginx.slice/nginx@second.service
+             ├─2008 "nginx: master process /usr/sbin/nginx -c /etc/nginx/nginx-second.conf -g daemon on; master_process on;"
+             └─2009 "nginx: worker process"
+
+Apr 04 15:21:55 ubu2 systemd[1]: Starting nginx@second.service - A high performance web server and a reverse proxy server...
+Apr 04 15:21:55 ubu2 systemd[1]: Started nginx@second.service - A high performance web server and a reverse proxy server.
+```
+Смотрю, какие порты слушаются:  
+```
+ss -tnulp | grep 900
+tcp   LISTEN 0      511                0.0.0.0:9001       0.0.0.0:*
+tcp   LISTEN 0      511                0.0.0.0:9002       0.0.0.0:*
+```
+Смотрю, список процессов:  
+```
+ps afx | grep nginx
+   9027 pts/0    S+     0:00  |           \_ grep --color=auto nginx
+   1800 ?        Ss     0:00 nginx: master process /usr/sbin/nginx -c /etc/nginx/nginx-first.conf -g daemon on; master_process on;
+   1801 ?        S      0:00  \_ nginx: worker process
+   2008 ?        Ss     0:00 nginx: master process /usr/sbin/nginx -c /etc/nginx/nginx-second.conf -g daemon on; master_process on;
+   2009 ?        S      0:00  \_ nginx: worker process
+```
