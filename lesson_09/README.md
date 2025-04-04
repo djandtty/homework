@@ -106,7 +106,7 @@ Apr 02 07:28:41 ubu2 systemd[1]: Started logcheck.timer - Test Timer to Test Ser
 ```
 
 
-**2. Установить spawn-fcgi и создать unit-файл (spawn-fcgi.sevice) с помощью переделки init-скрипта (https://gist.github.com/cea2k/1318020).**
+**2. Установить spawn-fcgi и создать unit-файл (spawn-fcgi.sevice) с помощью переделки init-скрипта (https://gist.github.com/cea2k/1318020).**  
 Устанавливаю пакет:  
 `sudo apt install spawn-fcgi php php-cgi php-cli apache2 libapache2-mod-fcgid`  
 Добавляю конфиг:  
