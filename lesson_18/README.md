@@ -8,17 +8,16 @@
 Т.е. ответ **да, в контейнере можно собрать ядро**  
   
 Команды:  
+```
 mkdir Les_Docker
   395  cd Les_Docker/
   396  nano Dockerfile
-```
 cat Dockerfile
 FROM nginx:alpine
 
 COPY index.html /usr/share/nginx/html/index.html
-```
+
   397  nano index.html
-```
 cat index.html
 <!DOCTYPE html>
 <html lang="en">
@@ -32,7 +31,7 @@ cat index.html
     <p>p TESTTESTETESTSET</p>
 </body>
 </html>
-```
+
   398  docker build -t custom-nginx .
   399  docker ps
   400  docker ps -a
@@ -43,4 +42,4 @@ cat index.html
   406  docker push djandtty/custom-nginx
   407  docker ps
   408  docker stop focused_feynman
-
+```
