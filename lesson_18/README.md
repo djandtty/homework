@@ -44,13 +44,9 @@ cat index.html
   408  docker stop focused_feynman
 ```
 
-Задание 2  
-
+Задание со звездочкой:  
+docker-compose.yml  
 ```
-  410  mkdir Les_Docker_2
-  411  cd Les_Docker_2/
-  413  nano docker-compose.yml
-
 cat docker-compose.yml
 version: '3.8'
 
@@ -87,18 +83,27 @@ volumes:
   db_data:
   redmine_data:
   redmine_themes:
-
-  420  ls
-  421  mkdir -p redmine/themes
-  425  cd redmine/
-  430  nano Dockerfile
-
+```
+Dockerfile:
+```
 cat Dockerfile
 FROM redmine:5.1
 
 COPY themes/farend_bleuclair /usr/src/redmine/public/themes/farend_bleuclair
 
 RUN chown -R redmine:redmine /usr/src/redmine/public/themes/farend_bleuclair
+```
+  
+Команды:
+```
+  410  mkdir Les_Docker_2
+  411  cd Les_Docker_2/
+  413  nano docker-compose.yml
+
+  420  ls
+  421  mkdir -p redmine/themes
+  425  cd redmine/
+  430  nano Dockerfile
 
   434  cd themes/
   435  git clone https://github.com/farend/redmine_theme_farend_bleuclair.git farend_bleuclair
