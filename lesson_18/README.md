@@ -43,3 +43,86 @@ cat index.html
   407  docker ps
   408  docker stop focused_feynman
 ```
+
+Задание 2  
+
+```
+  410  mkdir Les_Docker_2
+  411  cd Les_Docker_2/
+  413  nano docker-compose.yml
+
+cat docker-compose.yml
+version: '3.8'
+
+services:
+  redmine:
+    build:
+      context: ./redmine
+    image: custom-redmine:latest
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    volumes:
+      - redmine_data:/usr/src/redmine/files
+      - redmine_themes:/usr/src/redmine/public/themes
+    environment:
+      REDMINE_DB_MYSQL: db
+      REDMINE_DB_DATABASE: redmine
+      REDMINE_DB_USERNAME: redmine
+      REDMINE_DB_PASSWORD: secret
+
+  db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: redmine
+      MYSQL_USER: redmine
+      MYSQL_PASSWORD: secret
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
+  redmine_data:
+  redmine_themes:
+
+  420  ls
+  421  mkdir -p redmine/themes
+  425  cd redmine/
+  430  nano Dockerfile
+
+cat Dockerfile
+FROM redmine:5.1
+
+COPY themes/farend_bleuclair /usr/src/redmine/public/themes/farend_bleuclair
+
+RUN chown -R redmine:redmine /usr/src/redmine/public/themes/farend_bleuclair
+
+  434  cd themes/
+  435  git clone https://github.com/farend/redmine_theme_farend_bleuclair.git farend_bleuclair
+  436  ls
+  437  cd farend_bleuclair/
+  438  ls
+  439  pwd
+  445  tree
+  448  docker compose build
+  449  docker compose up -d
+  450  docker ps
+  452  docker logs les_docker_2-redmine-1
+  453  docker compose restart redmine
+  454  docker ps
+  455  docker logs les_docker_2-redmine-1
+  456* docker exec -it les_docker_2-redmine-1 b
+  457  docker ps
+  458  curl http://localhost:3000
+  459  curl localhost 3000
+  460  sudo netstat -tuln | grep 3000
+  461  sudo ss -tuln | grep 3000
+  462  curl http://localhost:3000
+  463  docker compose down
+  464  docker ps
+  465  docker compose up -d
+  466  docker ps
+```
