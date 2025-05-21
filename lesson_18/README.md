@@ -9,15 +9,17 @@
   
 Команды:  
 ```
-mkdir Les_Docker
+  394  mkdir Les_Docker
   395  cd Les_Docker/
   396  nano Dockerfile
+
 cat Dockerfile
 FROM nginx:alpine
 
 COPY index.html /usr/share/nginx/html/index.html
 
   397  nano index.html
+
 cat index.html
 <!DOCTYPE html>
 <html lang="en">
