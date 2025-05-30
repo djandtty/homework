@@ -35,8 +35,7 @@ uname -r
 Подключаем репозиторий:  
 `sudo yum install -y https://www.elrepo.org/elrepo-release-8.el8.elrepo.noarch.rpm`  
 Устанавливаю последнюю kernel-ml версию ядра:  
-`sudo yum --enablerepo elrepo-kernel install kernel-ml -y`
-В инструкции указано обновить конфигурации grub командой grub2-mkconfig. Но похоже что в CentOS8 это лишнее действие. Оно не обновляет меню загрузки, потому как меню загрузки теперь находится в каталоге /boot/loader/entries, а не в /boot/grub2/grub.cfg.
+`sudo yum --enablerepo elrepo-kernel install kernel-ml -y`  
 Перезагружаю и проверяю:  
 ```
 uname -r
