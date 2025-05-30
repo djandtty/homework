@@ -1,4 +1,4 @@
-
+Задание: ...  
 ```
 cat Vagrantfile
 MACHINES = {
@@ -32,7 +32,7 @@ uname -r
    
    4.18.0-516.el8.x86_64
 ```
-Подключаем репозиторий:  
+Подключаю репозиторий:  
 `sudo yum install -y https://www.elrepo.org/elrepo-release-8.el8.elrepo.noarch.rpm`  
 Устанавливаю последнюю kernel-ml версию ядра:  
 `sudo yum --enablerepo elrepo-kernel install kernel-ml -y`  
