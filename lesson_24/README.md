@@ -23,10 +23,10 @@ if [ $(date +%a) = "Sat" ] || [ $(date +%a) = "Sun" ]; then
     exit 0
 fi
 ```
-Добавим права на исполнение файла:  
+Добавил права на исполнение файла:  
 
     `7  chmod +x /usr/local/bin/login.sh`  
-И дальше тестировал:  
+Донастроил /etc/pam.d/sshd:  
 ```
     8  nano /etc/pam.d/sshd
 #%PAM-1.0
@@ -35,7 +35,9 @@ auth       include      common-auth
 account    include      common-account
 password   include      common-password
 session    include      common-session
-
+```
+И дальше тестировал (правил скрипт и день сработки):  
+```
     9  nano /usr/local/bin/login.sh
    10  nano /etc/pam.d/sshd
    11  tail -f /var/log/auth.log
