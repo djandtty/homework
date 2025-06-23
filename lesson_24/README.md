@@ -29,6 +29,13 @@ fi
 И дальше тестировал:  
 ```
     8  nano /etc/pam.d/sshd
+#%PAM-1.0
+auth       required     pam_exec.so debug /usr/local/bin/login.sh
+auth       include      common-auth
+account    include      common-account
+password   include      common-password
+session    include      common-session
+
     9  nano /usr/local/bin/login.sh
    10  nano /etc/pam.d/sshd
    11  tail -f /var/log/auth.log
