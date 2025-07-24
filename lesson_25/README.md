@@ -1,7 +1,4 @@
-
-
-
-
+Выполнил в соответствии с описанием в методичке  
 ```
 root@web:~# history
     1  date
@@ -32,4 +29,3 @@ root@log:~# history
     8  cat /var/log/rsyslog/web/nginx_access.log
     9  cat /var/log/rsyslog/web/nginx_error.log
 ```
-
